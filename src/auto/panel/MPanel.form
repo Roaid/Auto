@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="auto.panel.MainPanel">
+  <grid id="27dc6" binding="main_Panel" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="0" left="0" bottom="0" right="0"/>
+    <constraints>
+      <xy x="20" y="20" width="760" height="400"/>
+    </constraints>
+    <properties>
+      <background color="-1513240"/>
+      <preferredSize width="400" height="300"/>
+    </properties>
+    <border type="empty">
+      <size top="5" left="5" bottom="5" right="5"/>
+    </border>
+    <children>
+      <tabbedpane id="83a5b" binding="maintab_JTabbedPanel">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="2" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="350" height="-1"/>
+          </grid>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="98287" binding="stock_JPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="Stock"/>
+            </constraints>
+            <properties>
+              <minimumSize width="150" height="54"/>
+              <preferredSize width="180" height="54"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <scrollpane id="53d8e" binding="stock_JScrollPane">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <enabled value="true"/>
+                  <verifyInputWhenFocusTarget value="false"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="e0d62" class="javax.swing.JTable" binding="stock_JTable">
+                    <constraints/>
+                    <properties>
+                      <autoCreateRowSorter value="false"/>
+                      <autoResizeMode value="2"/>
+                      <cellSelectionEnabled value="false"/>
+                      <columnSelectionAllowed value="false"/>
+                      <enabled value="true"/>
+                      <rowSelectionAllowed value="true"/>
+                    </properties>
+                    <clientProperties>
+                      <JTable.autoStartsEdit class="java.lang.Boolean" value="false"/>
+                    </clientProperties>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
+          </grid>
+          <grid id="8e909" binding="strategy_JPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="Strategy"/>
+            </constraints>
+            <properties>
+              <minimumSize width="150" height="54"/>
+              <preferredSize width="180" height="54"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <scrollpane id="d2801" binding="strategy_JScrollPane">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="32d9" class="javax.swing.JTable" binding="strategy_JTable">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
+          </grid>
+        </children>
+      </tabbedpane>
+      <scrollpane id="24130">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="c7b40" class="javax.swing.JTextArea" binding="info_JTextArea">
+            <constraints/>
+            <properties>
+              <alignmentX value="0.5"/>
+              <autoscrolls value="true"/>
+              <background color="-33"/>
+              <dragEnabled value="false"/>
+              <editable value="false"/>
+              <enabled value="true"/>
+              <lineWrap value="true"/>
+              <margin top="0" left="0" bottom="0" right="0"/>
+              <text value=""/>
+              <wrapStyleWord value="false"/>
+            </properties>
+            <clientProperties>
+              <html.disable class="java.lang.Boolean" value="false"/>
+            </clientProperties>
+          </component>
+        </children>
+      </scrollpane>
+    </children>
+  </grid>
+</form>

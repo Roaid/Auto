@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/resources" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/src/auto/test" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Hibernate" level="project" />
+    <orderEntry type="library" name="Mysql" level="project" />
+    <orderEntry type="library" name="spring-aop-4.3.2.RELEASE-javadoc" level="project" />
+    <orderEntry type="library" name="log4j-1.2-api-2.8-javadoc" level="project" />
+  </component>
+</module>
