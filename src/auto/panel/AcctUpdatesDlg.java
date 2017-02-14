@@ -17,78 +17,78 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class AcctUpdatesDlg extends JDialog {
-    JTextField 	m_txtAcctCode = new JTextField(10);
-    JButton 	m_btnSubscribe = new JButton("Subscribe");
-    JButton 	m_btnUnSubscribe = new JButton("UnSubscribe");
-    JButton 	m_btnClose = new JButton( "Close");
-    AutoFrame	m_parent;
-    String 	m_acctCode;
-    boolean 	m_subscribe = false;
-    boolean 	m_rc;
+    JTextField m_txtAcctCode = new JTextField(10);
+    JButton m_btnSubscribe = new JButton("Subscribe");
+    JButton m_btnUnSubscribe = new JButton("UnSubscribe");
+    JButton m_btnClose = new JButton("Close");
+    AutoFrame m_parent;
+    String m_acctCode;
+    boolean m_subscribe = false;
+    boolean m_rc;
 
-    public AcctUpdatesDlg( AutoFrame owner) {
-        super( owner, true);
+    public AcctUpdatesDlg(AutoFrame owner) {
+        super(owner, true);
 
         m_parent = owner;
 
         setTitle("Account Updates (FA Customers only)");
-        setSize(200,300);
+        setSize(200, 300);
 
-     	m_txtAcctCode.setMaximumSize( m_txtAcctCode.getPreferredSize());
+        m_txtAcctCode.setMaximumSize(m_txtAcctCode.getPreferredSize());
 
 
         Box row1 = Box.createHorizontalBox();
-        row1.add( new JLabel( " Enter the account code for the FA managed \n account you wish to receive updates for :"));
+        row1.add(new JLabel(" Enter the account code for the FA managed \n account you wish to receive updates for :"));
 
         Box row2 = Box.createHorizontalBox();
-        row2.add( new JLabel( "Account Code :"));
-        row2.add( Box.createHorizontalStrut(10));
-        row2.add( m_txtAcctCode);
+        row2.add(new JLabel("Account Code :"));
+        row2.add(Box.createHorizontalStrut(10));
+        row2.add(m_txtAcctCode);
 
         Box row3 = Box.createHorizontalBox();
-        row3.add( m_btnSubscribe);
-        row3.add( Box.createHorizontalStrut(10));
-        row3.add( m_btnUnSubscribe);
+        row3.add(m_btnSubscribe);
+        row3.add(Box.createHorizontalStrut(10));
+        row3.add(m_btnUnSubscribe);
 
 
         Box vbox = Box.createVerticalBox();
-        vbox.add( Box.createVerticalStrut(10));
-        vbox.add( row1);
-        vbox.add( Box.createVerticalStrut(10));
-        vbox.add( row2);
-        vbox.add( Box.createVerticalStrut(10));
-        vbox.add( row3);
-        vbox.add( Box.createVerticalStrut(10));
+        vbox.add(Box.createVerticalStrut(10));
+        vbox.add(row1);
+        vbox.add(Box.createVerticalStrut(10));
+        vbox.add(row2);
+        vbox.add(Box.createVerticalStrut(10));
+        vbox.add(row3);
+        vbox.add(Box.createVerticalStrut(10));
 
         // create accoun chooser panel
         JPanel acctChooserPanel = new JPanel();
-        acctChooserPanel.setBorder( BorderFactory.createTitledBorder( ""));
+        acctChooserPanel.setBorder(BorderFactory.createTitledBorder(""));
         acctChooserPanel.add(vbox);
 
         // create button panel
         JPanel buttonPanel = new JPanel();
-        buttonPanel.add( m_btnClose);
+        buttonPanel.add(m_btnClose);
 
         // create action listeners
-        m_btnSubscribe.addActionListener( new ActionListener() {
-            public void actionPerformed( ActionEvent e) {
+        m_btnSubscribe.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 onSubscribe();
             }
         });
-        m_btnUnSubscribe.addActionListener( new ActionListener() {
-            public void actionPerformed( ActionEvent e) {
+        m_btnUnSubscribe.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 onUnSubscribe();
             }
         });
-        m_btnClose.addActionListener( new ActionListener() {
-            public void actionPerformed( ActionEvent e) {
+        m_btnClose.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 onClose();
             }
         });
 
         // create dlg box
-        getContentPane().add( acctChooserPanel, BorderLayout.CENTER);
-        getContentPane().add( buttonPanel, BorderLayout.SOUTH);
+        getContentPane().add(acctChooserPanel, BorderLayout.CENTER);
+        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
         pack();
     }
 
@@ -97,7 +97,7 @@ public class AcctUpdatesDlg extends JDialog {
         m_acctCode = m_txtAcctCode.getText();
 
         m_rc = true;
-        setVisible( false);
+        setVisible(false);
     }
 
     void onUnSubscribe() {
@@ -105,12 +105,12 @@ public class AcctUpdatesDlg extends JDialog {
         m_acctCode = m_txtAcctCode.getText();
 
         m_rc = true;
-        setVisible( false);
+        setVisible(false);
     }
 
     void onClose() {
         m_acctCode = "";
         m_rc = false;
-        setVisible( false);
+        setVisible(false);
     }
 }

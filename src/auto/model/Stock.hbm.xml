@@ -14,9 +14,9 @@
 
     <class name="Stock1" table="Stocks">
         <id name="code" column="Stock_ID">
-            <generator class="assigned" />
+            <generator class="assigned"/>
         </id>
-		<one-to-one name="contract" class="com.ib.client.Contract" cascade="all" />
+        <one-to-one name="contract" class="com.ib.client.Contract" cascade="all"/>
         <!--<many-to-one name="contract" class="com.ib.client.Contract" column="contract_id" cascade="all" unique="true" />-->
         <property name="bprice"/>
         <property name="aprice"/>

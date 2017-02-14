@@ -16,12 +16,12 @@ public class Proportion implements Strategy {
     @Id
     private String code;
     @ManyToOne()
-    @Cascade(value=org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-    @JoinColumn(name="stock1")
+    @Cascade(value = org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @JoinColumn(name = "stock1")
     private Stock stock1;
     @ManyToOne()
-    @Cascade(value=org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-    @JoinColumn(name="stock2")
+    @Cascade(value = org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @JoinColumn(name = "stock2")
     private Stock stock2;
     @Transient
     private Contract c_contract = new Contract();    //Combo contract

@@ -25,19 +25,19 @@ import javax.swing.table.AbstractTableModel;
 import com.ib.client.EClientSocket;
 
 public class MktDepthDlg extends JDialog {
-    final static int OPERATION_INSERT 		= 0;
-    final static int OPERATION_UPDATE 		= 1;
-    final static int OPERATION_DELETE 		= 2;
+    final static int OPERATION_INSERT = 0;
+    final static int OPERATION_UPDATE = 1;
+    final static int OPERATION_DELETE = 2;
 
     final static int SIDE_ASK = 0;
     final static int SIDE_BID = 1;
     final static int MKT_DEPTH_DATA_RESET = 317;
 
-    private JButton 		m_close = new JButton( "Close");
-    private MktDepthModel 	m_bidModel = new MktDepthModel();
-    private MktDepthModel 	m_askModel = new MktDepthModel();
-    private EClientSocket 	m_client;
-    private int			  	m_id;
+    private JButton m_close = new JButton("Close");
+    private MktDepthModel m_bidModel = new MktDepthModel();
+    private MktDepthModel m_askModel = new MktDepthModel();
+    private EClientSocket m_client;
+    private int m_id;
 
     public MktDepthDlg(String title, JFrame parent) {
         super(parent, title, false);
@@ -45,8 +45,8 @@ public class MktDepthDlg extends JDialog {
         JScrollPane bidPane = new JScrollPane(new JTable(m_bidModel));
         JScrollPane askPane = new JScrollPane(new JTable(m_askModel));
 
-        bidPane.setBorder(BorderFactory.createTitledBorder( "Bid") );
-        askPane.setBorder(BorderFactory.createTitledBorder( "Ask") );
+        bidPane.setBorder(BorderFactory.createTitledBorder("Bid"));
+        askPane.setBorder(BorderFactory.createTitledBorder("Ask"));
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, bidPane, askPane);
         splitPane.setOneTouchExpandable(true);
@@ -55,87 +55,77 @@ public class MktDepthDlg extends JDialog {
 
         JPanel closePanel = new JPanel();
         closePanel.add(m_close);
-        m_close.addActionListener( new ActionListener() {
-            public void actionPerformed( ActionEvent e) {
+        m_close.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 onClose();
             }
         });
 
-        this.addWindowListener( new WindowAdapter() {
+        this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 onClose();
             }
         });
 
 
-        getContentPane().add( splitPane, BorderLayout.CENTER);
-        getContentPane().add( closePanel, BorderLayout.SOUTH);
+        getContentPane().add(splitPane, BorderLayout.CENTER);
+        getContentPane().add(closePanel, BorderLayout.SOUTH);
         setLocation(20, 20);
         pack();
         reset();
     }
 
-    void setParams( EClientSocket client, int id) {
+    void setParams(EClientSocket client, int id) {
         m_client = client;
         m_id = id;
         reset();
     }
 
-    void updateMktDepth( int tickerId, int position, String marketMaker,
-        int operation, int side, double price, int size) {
+    void updateMktDepth(int tickerId, int position, String marketMaker,
+                        int operation, int side, double price, int size) {
         try {
             MktDepthModel.MktDepthTableRow tmpRow = null;
 
-            if (operation == OPERATION_INSERT )
-            {
-                    if ( side == SIDE_BID ) {
-                            m_bidModel.addOrderAt(position, marketMaker, price, size);
+            if (operation == OPERATION_INSERT) {
+                if (side == SIDE_BID) {
+                    m_bidModel.addOrderAt(position, marketMaker, price, size);
+                } else {
+                    m_askModel.addOrderAt(position, marketMaker, price, size);
+                }
+            } else if (operation == OPERATION_UPDATE) {
+                if (side == SIDE_BID) {
+                    tmpRow = m_bidModel.getOrderAt(position);
+                    if (tmpRow != null) {
+                        tmpRow.m_marketMaker = marketMaker;
+                        tmpRow.m_price = price;
+                        tmpRow.m_size = size;
                     }
-                    else {
-                            m_askModel.addOrderAt(position, marketMaker, price, size);
+                    m_bidModel.fireTableRowsUpdated(position, position);
+                } else {
+                    tmpRow = m_askModel.getOrderAt(position);
+                    if (tmpRow != null) {
+                        tmpRow.m_marketMaker = marketMaker;
+                        tmpRow.m_price = price;
+                        tmpRow.m_size = size;
                     }
-            }
-            else if (operation == OPERATION_UPDATE )
-            {
-                    if ( side == SIDE_BID ) {
-                            tmpRow = m_bidModel.getOrderAt(position);
-                            if ( tmpRow != null ) {
-                                    tmpRow.m_marketMaker = marketMaker;
-                                    tmpRow.m_price = price;
-                                    tmpRow.m_size = size;
-                            }
-                            m_bidModel.fireTableRowsUpdated(position, position);
-                    }
-                    else {
-                            tmpRow = m_askModel.getOrderAt(position);
-                            if ( tmpRow != null ) {
-                                    tmpRow.m_marketMaker = marketMaker;
-                                    tmpRow.m_price = price;
-                                    tmpRow.m_size = size;
-                            }
-                            m_askModel.fireTableRowsUpdated(position, position);
-                    }
+                    m_askModel.fireTableRowsUpdated(position, position);
+                }
 
-            }
-            else if  (operation == OPERATION_DELETE)
-            {
-                    if ( side == SIDE_BID ) {
-                            m_bidModel.removeOrderAt(position);
-                    }
-                    else {
-                            m_askModel.removeOrderAt(position);
-                    }
+            } else if (operation == OPERATION_DELETE) {
+                if (side == SIDE_BID) {
+                    m_bidModel.removeOrderAt(position);
+                } else {
+                    m_askModel.removeOrderAt(position);
+                }
             }
 
-            if ( side == SIDE_BID ) {
-                    m_bidModel.updateCumSizesAndAvgPrices(position);
+            if (side == SIDE_BID) {
+                m_bidModel.updateCumSizesAndAvgPrices(position);
+            } else {
+                m_askModel.updateCumSizesAndAvgPrices(position);
             }
-            else {
-                    m_askModel.updateCumSizesAndAvgPrices(position);
-            }
-        }
-        catch( Exception e) {
-                System.out.println("Exception: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
         }
     }
 
@@ -145,23 +135,21 @@ public class MktDepthDlg extends JDialog {
     }
 
     void onClose() {
-		m_client.cancelMktDepth( m_id );
-        setVisible( false);
+        m_client.cancelMktDepth(m_id);
+        setVisible(false);
     }
 }
 
 class MktDepthModel extends AbstractTableModel {
-    private LinkedList<MktDepthTableRow>  m_allData = new LinkedList<MktDepthTableRow>();
+    private LinkedList<MktDepthTableRow> m_allData = new LinkedList<MktDepthTableRow>();
 
-    synchronized public void addOrderAt(int position, String marketMaker, double price, int size)
-    {
+    synchronized public void addOrderAt(int position, String marketMaker, double price, int size) {
         MktDepthTableRow newData = new MktDepthTableRow(marketMaker, price, size);
         m_allData.add(position, newData);
         fireTableRowsInserted(position, position);
     }
 
-    synchronized public void removeOrderAt(int position)
-    {
+    synchronized public void removeOrderAt(int position) {
         m_allData.remove(position);
         fireTableRowsDeleted(position, position);
     }
@@ -174,11 +162,10 @@ class MktDepthModel extends AbstractTableModel {
         return m_allData.listIterator(orderPosition);
     }
 
-    synchronized public void updateCumSizesAndAvgPrices(int baseRow)
-    {
-        int     cumSize = 0;
-        double  totalPrice = 0.0;
-        MktDepthTableRow	tmpRow = null;
+    synchronized public void updateCumSizesAndAvgPrices(int baseRow) {
+        int cumSize = 0;
+        double totalPrice = 0.0;
+        MktDepthTableRow tmpRow = null;
 
         if (baseRow > 0) {
             tmpRow = m_allData.get(baseRow - 1);
@@ -186,8 +173,7 @@ class MktDepthModel extends AbstractTableModel {
             totalPrice = tmpRow.m_price * cumSize;
         }
 
-        for (int ctr = baseRow ; ctr < m_allData.size() ; ctr++)
-        {
+        for (int ctr = baseRow; ctr < m_allData.size(); ctr++) {
             tmpRow = m_allData.get(ctr);
             cumSize += tmpRow.m_size;
             totalPrice += (tmpRow.m_price * tmpRow.m_size);
@@ -240,13 +226,13 @@ class MktDepthModel extends AbstractTableModel {
     }
 
     class MktDepthTableRow {
-        public String 	m_marketMaker;
-        public double 	m_price;
-        public int 		m_size;
-        public int 		m_cumSize;
-        public double	m_avgPrice;
+        public String m_marketMaker;
+        public double m_price;
+        public int m_size;
+        public int m_cumSize;
+        public double m_avgPrice;
 
-        MktDepthTableRow(String marketMaker, double price,int size) {
+        MktDepthTableRow(String marketMaker, double price, int size) {
             m_marketMaker = marketMaker;
             m_price = price;
             m_size = size;
@@ -255,20 +241,19 @@ class MktDepthModel extends AbstractTableModel {
         }
 
         Object getValue(int c) {
-            switch (c)
-            {
+            switch (c) {
                 case 0:
-                        return m_marketMaker;
+                    return m_marketMaker;
                 case 1:
-                        return "" + m_price;
+                    return "" + m_price;
                 case 2:
-                        return "" + m_size;
+                    return "" + m_size;
                 case 3:
-                        return "" + m_cumSize;
+                    return "" + m_cumSize;
                 case 4:
-                        return "" + m_avgPrice;
+                    return "" + m_avgPrice;
                 default:
-                        return null;
+                    return null;
             }
         }
     }

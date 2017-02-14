@@ -42,12 +42,15 @@ public class MainPanel {
     public JTable getStock_JTable() {
         return stock_JTable;
     }
+
     public JTable getStrategy_JTable() {
         return strategy_JTable;
     }
+
     public DefaultTableModel getModel_DefaultTableModel() {
         return model_DefaultTableModel;
     }
+
     public DefaultTableModel getModel_DefaultTableModel2() {
         return model_DefaultTableModel2;
     }
@@ -71,7 +74,7 @@ public class MainPanel {
 
 
         Object[][] data2 = null;
-        String[] columnNames2 = {"ID","Code", "Type", "Status"};
+        String[] columnNames2 = {"ID", "Code", "Type", "Status"};
         model_DefaultTableModel2 = new DefaultTableModel(data2, columnNames2);
         strategy_JTable.setModel(model_DefaultTableModel2);
         Dimension b = stock_JTable.getPreferredSize();

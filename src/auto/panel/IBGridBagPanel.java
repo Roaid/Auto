@@ -23,36 +23,36 @@ class IBGridBagPanel extends JPanel {
     }
 
     public void SetObjectPlacement(Component c, int x, int y) {
-        addToPane(c, x, y, 1, 1, 100, 100, oneInsets) ;
-     }
+        addToPane(c, x, y, 1, 1, 100, 100, oneInsets);
+    }
 
     public void SetObjectPlacement(Component c, int x, int y, int w, int h) {
-        addToPane(c, x, y, w, h, 100, 100, oneInsets) ;
-     }
+        addToPane(c, x, y, w, h, 100, 100, oneInsets);
+    }
 
-   public void SetObjectPlacement(Component c, int x, int y, int w, int h, int xGrow, int yGrow) {
-      addToPane(c, x, y, w, h, xGrow, yGrow, oneInsets) ;
-   }
+    public void SetObjectPlacement(Component c, int x, int y, int w, int h, int xGrow, int yGrow) {
+        addToPane(c, x, y, w, h, xGrow, yGrow, oneInsets);
+    }
 
-   public void SetObjectPlacement(Component c, int x, int y, int w, int h, int xGrow, int yGrow, int fill) {
-      addToPane(c, x, y, w, h, xGrow, yGrow, GridBagConstraints.WEST, fill, oneInsets) ;
-   }
+    public void SetObjectPlacement(Component c, int x, int y, int w, int h, int xGrow, int yGrow, int fill) {
+        addToPane(c, x, y, w, h, xGrow, yGrow, GridBagConstraints.WEST, fill, oneInsets);
+    }
 
-   public void SetObjectPlacement(Component c, int x, int y, int w, int h, int xGrow, int yGrow, int anchor, int fill) {
-      addToPane(c, x, y, w, h, xGrow, yGrow, anchor, fill, oneInsets) ;
-   }
+    public void SetObjectPlacement(Component c, int x, int y, int w, int h, int xGrow, int yGrow, int anchor, int fill) {
+        addToPane(c, x, y, w, h, xGrow, yGrow, anchor, fill, oneInsets);
+    }
 
-   public void SetObjectPlacement(Component c, int x, int y, int w, int h, int xGrow, int yGrow, Insets insets) {
-      addToPane(c, x, y, w, h, xGrow, yGrow, insets) ;
-   }
+    public void SetObjectPlacement(Component c, int x, int y, int w, int h, int xGrow, int yGrow, Insets insets) {
+        addToPane(c, x, y, w, h, xGrow, yGrow, insets);
+    }
 
-   private void addToPane(Component c, int x, int y, int w, int h,
-                                 int xGrow, int yGrow, Insets insets) {
-      addToPane(c, x, y, w, h, xGrow, yGrow, GridBagConstraints.WEST, GridBagConstraints.BOTH, insets) ;
-   }
+    private void addToPane(Component c, int x, int y, int w, int h,
+                           int xGrow, int yGrow, Insets insets) {
+        addToPane(c, x, y, w, h, xGrow, yGrow, GridBagConstraints.WEST, GridBagConstraints.BOTH, insets);
+    }
 
-   private void addToPane(Component c, int x, int y, int w, int h, int xGrow,
-            int yGrow, int anchor, int fill, Insets insets) {
+    private void addToPane(Component c, int x, int y, int w, int h, int xGrow,
+                           int yGrow, int anchor, int fill, Insets insets) {
         GridBagConstraints gbc = new GridBagConstraints();
 
         // the coordinates of the cell in the layout that contains

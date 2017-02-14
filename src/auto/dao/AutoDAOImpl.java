@@ -21,7 +21,6 @@ import java.util.*;
 public class AutoDAOImpl implements AutoDAO {
 
 
-
     @Override
     public List<Stock> getAllStocksData(String wherePart, String orderByPart, String rowNumPart) {
         return null;
@@ -50,7 +49,7 @@ public class AutoDAOImpl implements AutoDAO {
     }
 
     @Override
-    public void saveStocks(HashMap<Integer, Stock> m_mapStock){
+    public void saveStocks(HashMap<Integer, Stock> m_mapStock) {
         saveAnything(m_mapStock);
     }
 
@@ -81,7 +80,7 @@ public class AutoDAOImpl implements AutoDAO {
         return tmp;
     }
 
-    private void saveAnything(HashMap<Integer, ?> m_mapAnything){
+    private void saveAnything(HashMap<Integer, ?> m_mapAnything) {
         Session session = null;
         Transaction tx = null;
         Iterator<? extends Map.Entry<Integer, ?>> iterator = m_mapAnything.entrySet().iterator();

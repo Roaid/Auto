@@ -33,7 +33,6 @@ public class AutoServiceImpl implements AutoService {
     }
 
 
-
     @Override
     public void saveStocks(HashMap<Integer, Stock> m_mapStock) {
         autoDAO = new AutoDAOImpl();

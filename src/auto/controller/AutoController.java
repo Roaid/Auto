@@ -20,37 +20,6 @@ public class AutoController implements EWrapper {
     private static final Logger logger = Logger.getLogger(AutoController.class);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Override
     public void tickPrice(int tickerId, int field, double price, int canAutoExecute) {
 

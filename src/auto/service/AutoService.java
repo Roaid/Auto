@@ -14,6 +14,7 @@ import java.util.HashMap;
 public interface AutoService extends EWrapper {
 
     void saveStocks(HashMap<Integer, Stock> m_mapStock);
+
     void saveStrategies(HashMap<Integer, Strategy> m_mapStrategy);
 
     ArrayList<Strategy> loadStrategies();

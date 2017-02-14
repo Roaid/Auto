@@ -391,7 +391,7 @@ class AutoFrame extends JFrame implements EWrapper {
                                             }
 
                                         }
-                                    }, 0,5000
+                                    }, 0, 5000
                             );
                             break;
 
@@ -405,6 +405,7 @@ class AutoFrame extends JFrame implements EWrapper {
         }
 
     }
+
     private void stopAStrategy() {
 
     }
@@ -415,13 +416,14 @@ class AutoFrame extends JFrame implements EWrapper {
         autoService.saveStrategies(m_mapStrategy);
     }
 
-    private void loadStrategies(){
+    private void loadStrategies() {
         autoService = new AutoServiceImpl();
         ArrayList<Strategy> tmp = autoService.loadStrategies();
 
-       // m_mapStrategy
+        // m_mapStrategy
 
     }
+
     private String getStatusText(int a) {
         switch (a) {
             case 0:
@@ -628,8 +630,8 @@ class AutoFrame extends JFrame implements EWrapper {
             int index = -1;  //store hashmap key from certain row.
             int rows = table2.getRowCount();
             for (int i = 0; i < rows; i++) {
-                int index_tmp = Integer.parseInt(table2.getValueAt(i,0).toString());
-                if(m_mapStrategy.get(index_tmp).getOrder_id() == orderId){
+                int index_tmp = Integer.parseInt(table2.getValueAt(i, 0).toString());
+                if (m_mapStrategy.get(index_tmp).getOrder_id() == orderId) {
                     position = i;
                     index = index_tmp;
                 }
@@ -658,7 +660,6 @@ class AutoFrame extends JFrame implements EWrapper {
             }
         }
     }
-
 
 
     @Override

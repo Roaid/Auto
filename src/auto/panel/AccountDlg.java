@@ -26,17 +26,19 @@ import com.ib.client.Contract;
 import com.ib.client.Util;
 
 public class AccountDlg extends JDialog {
-    private JTextField 		m_updateTime = new JTextField();
-    private JLabel 			m_timeLabel = new JLabel("Update time:");
-    private JButton 		m_close = new JButton( "Close");
-    private PortfolioTable 	m_portfolioModel = new PortfolioTable();
-    private AcctValueModel 	m_acctValueModel = new AcctValueModel();
-    private boolean 		m_rc;
+    private JTextField m_updateTime = new JTextField();
+    private JLabel m_timeLabel = new JLabel("Update time:");
+    private JButton m_close = new JButton("Close");
+    private PortfolioTable m_portfolioModel = new PortfolioTable();
+    private AcctValueModel m_acctValueModel = new AcctValueModel();
+    private boolean m_rc;
 
     private String m_accountName;
     private boolean m_complete;
 
-    boolean rc()            { return m_rc; }
+    boolean rc() {
+        return m_rc;
+    }
 
     public AccountDlg(JFrame parent) {
         super(parent, true);
@@ -44,8 +46,8 @@ public class AccountDlg extends JDialog {
         JScrollPane acctPane = new JScrollPane(new JTable(m_acctValueModel));
         JScrollPane portPane = new JScrollPane(new JTable(m_portfolioModel));
 
-        acctPane.setBorder(BorderFactory.createTitledBorder( "Key, Value, Currency, and Account") );
-        portPane.setBorder(BorderFactory.createTitledBorder( "Portfolio Entries") );
+        acctPane.setBorder(BorderFactory.createTitledBorder("Key, Value, Currency, and Account"));
+        portPane.setBorder(BorderFactory.createTitledBorder("Portfolio Entries"));
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, acctPane, portPane);
         splitPane.setOneTouchExpandable(true);
@@ -61,14 +63,14 @@ public class AccountDlg extends JDialog {
         m_updateTime.setEditable(false);
         m_updateTime.setHorizontalAlignment(SwingConstants.CENTER);
         m_updateTime.setPreferredSize(new Dimension(80, 26));
-        m_close.addActionListener( new ActionListener() {
-            public void actionPerformed( ActionEvent e) {
+        m_close.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 onClose();
             }
         });
 
-        getContentPane().add( splitPane, BorderLayout.CENTER);
-        getContentPane().add( timePanel, BorderLayout.SOUTH);
+        getContentPane().add(splitPane, BorderLayout.CENTER);
+        getContentPane().add(timePanel, BorderLayout.SOUTH);
         setLocation(20, 20);
         pack();
         reset();
@@ -79,9 +81,9 @@ public class AccountDlg extends JDialog {
     }
 
     void updatePortfolio(Contract contract, int position, double marketPrice, double marketValue,
-    		double averageCost, double unrealizedPNL, double realizedPNL, String accountName) {
-       m_portfolioModel.updatePortfolio(contract, position, marketPrice, marketValue,
-          averageCost, unrealizedPNL, realizedPNL, accountName);
+                         double averageCost, double unrealizedPNL, double realizedPNL, String accountName) {
+        m_portfolioModel.updatePortfolio(contract, position, marketPrice, marketValue,
+                averageCost, unrealizedPNL, realizedPNL, accountName);
     }
 
     void reset() {
@@ -91,7 +93,7 @@ public class AccountDlg extends JDialog {
     }
 
     void onClose() {
-        setVisible( false);
+        setVisible(false);
     }
 
     void updateAccountTime(String timeStamp) {
@@ -99,41 +101,40 @@ public class AccountDlg extends JDialog {
     }
 
     void accountDownloadBegin(String accountName) {
-    	m_accountName = accountName;
-    	m_complete = false;
+        m_accountName = accountName;
+        m_complete = false;
 
-    	updateTitle();
+        updateTitle();
     }
 
 
+    void accountDownloadEnd(String accountName) {
 
-	void accountDownloadEnd(String accountName) {
+        if (!Util.StringIsEmpty(m_accountName) &&
+                !m_accountName.equals(accountName)) {
+            return;
+        }
 
-    	if ( !Util.StringIsEmpty( m_accountName) &&
-    		 !m_accountName.equals( accountName)) {
-    		return;
-    	}
-
-    	m_complete = true;
-       	updateTitle();
+        m_complete = true;
+        updateTitle();
     }
 
     private void updateTitle() {
 
-    	String title = new String();
+        String title = new String();
 
-    	if (!Util.StringIsEmpty( m_accountName)) {
-    		title += m_accountName;
-    	}
-    	if (m_complete) {
-    		if (title.length() != 0) {
-    			title += ' ';
-    		}
-    		title += "[complete]";
-    	}
+        if (!Util.StringIsEmpty(m_accountName)) {
+            title += m_accountName;
+        }
+        if (m_complete) {
+            if (title.length() != 0) {
+                title += ' ';
+            }
+            title += "[complete]";
+        }
 
-		setTitle(title);
-	}
+        setTitle(title);
+    }
 }
 
 
@@ -142,24 +143,24 @@ class PortfolioTable extends AbstractTableModel {
 
     void updatePortfolio(Contract contract, int position, double marketPrice, double marketValue,
                          double averageCost, double unrealizedPNL, double realizedPNL, String accountName) {
-         PortfolioTableRow newData =
-         new PortfolioTableRow(contract, position, marketPrice, marketValue, averageCost, unrealizedPNL, realizedPNL, accountName);
-         int size = m_allData.size();
-         for ( int i = 0; i < size; i++ ) {
-             PortfolioTableRow test = m_allData.get(i);
-             if ( test.m_contract.equals(newData.m_contract) ) {
-                 if ( newData.m_position == 0 )
-                     m_allData.remove(i);
-                 else
-                     m_allData.set(i, newData);
+        PortfolioTableRow newData =
+                new PortfolioTableRow(contract, position, marketPrice, marketValue, averageCost, unrealizedPNL, realizedPNL, accountName);
+        int size = m_allData.size();
+        for (int i = 0; i < size; i++) {
+            PortfolioTableRow test = m_allData.get(i);
+            if (test.m_contract.equals(newData.m_contract)) {
+                if (newData.m_position == 0)
+                    m_allData.remove(i);
+                else
+                    m_allData.set(i, newData);
 
-                 fireTableDataChanged();
-                 return;
-             }
-         }
+                fireTableDataChanged();
+                return;
+            }
+        }
 
-         m_allData.add(newData);
-         fireTableDataChanged();
+        m_allData.add(newData);
+        fireTableDataChanged();
     }
 
     void reset() {
@@ -183,7 +184,7 @@ class PortfolioTable extends AbstractTableModel {
     }
 
     public String getColumnName(int c) {
-        switch(c) {
+        switch (c) {
             case 0:
                 return "ConId";
             case 1:
@@ -197,9 +198,9 @@ class PortfolioTable extends AbstractTableModel {
             case 5:
                 return "Right";
             case 6:
-            	return "Multiplier";
+                return "Multiplier";
             case 7:
-            	return "Exchange";
+                return "Exchange";
             case 8:
                 return "Currency";
             case 9:
@@ -227,17 +228,17 @@ class PortfolioTable extends AbstractTableModel {
 
     class PortfolioTableRow {
         Contract m_contract;
-        int      m_position;
-        double   m_marketPrice;
-        double   m_marketValue;
-        double   m_averageCost;
-        double   m_unrealizedPNL;
-        double   m_realizedPNL;
-        String   m_accountName;
+        int m_position;
+        double m_marketPrice;
+        double m_marketValue;
+        double m_averageCost;
+        double m_unrealizedPNL;
+        double m_realizedPNL;
+        String m_accountName;
 
-        PortfolioTableRow( Contract contract, int position, double marketPrice,
-            double marketValue, double averageCost, double unrealizedPNL,
-            double realizedPNL, String accountName) {
+        PortfolioTableRow(Contract contract, int position, double marketPrice,
+                          double marketValue, double averageCost, double unrealizedPNL,
+                          double realizedPNL, String accountName) {
             m_contract = contract;
             m_position = position;
             m_marketPrice = marketPrice;
@@ -249,7 +250,7 @@ class PortfolioTable extends AbstractTableModel {
         }
 
         Object getValue(int c) {
-            switch(c) {
+            switch (c) {
                 case 0:
                     return m_contract.conid();
                 case 1:
@@ -263,9 +264,9 @@ class PortfolioTable extends AbstractTableModel {
                 case 5:
                     return (m_contract.right() != null && m_contract.right().equals("???")) ? null : m_contract.right();
                 case 6:
-                	return m_contract.multiplier();
+                    return m_contract.multiplier();
                 case 7:
-                	return (m_contract.primaryExch() != null ? m_contract.primaryExch() : "");
+                    return (m_contract.primaryExch() != null ? m_contract.primaryExch() : "");
                 case 8:
                     return m_contract.currency();
                 case 9:
@@ -297,22 +298,22 @@ class AcctValueModel extends AbstractTableModel {
     Vector<AccountTableRow> m_allData = new Vector<AccountTableRow>();
 
     void updateAccountValue(String key, String val, String currency, String accountName) {
-         AccountTableRow newData = new AccountTableRow(key, val, currency, accountName);
-         int size = m_allData.size();
-         for ( int i = 0; i < size; i++ ) {
-             AccountTableRow test = m_allData.get(i);
-               if (test.m_key != null &&
-                   test.m_key.equals(newData.m_key) &&
-                   test.m_currency != null &&
-                   test.m_currency.equals(newData.m_currency)) {
-                 test.m_value = newData.m_value;
-                 fireTableDataChanged();
-                 return;
-               }
-         }
+        AccountTableRow newData = new AccountTableRow(key, val, currency, accountName);
+        int size = m_allData.size();
+        for (int i = 0; i < size; i++) {
+            AccountTableRow test = m_allData.get(i);
+            if (test.m_key != null &&
+                    test.m_key.equals(newData.m_key) &&
+                    test.m_currency != null &&
+                    test.m_currency.equals(newData.m_currency)) {
+                test.m_value = newData.m_value;
+                fireTableDataChanged();
+                return;
+            }
+        }
 
-         m_allData.add(newData);
-         fireTableDataChanged();
+        m_allData.add(newData);
+        fireTableDataChanged();
     }
 
     void reset() {
@@ -362,7 +363,7 @@ class AcctValueModel extends AbstractTableModel {
             m_key = key;
             m_value = val;
             m_currency = cur;
-            m_accountName = accountName ;
+            m_accountName = accountName;
         }
 
         Object getValue(int c) {
@@ -374,7 +375,7 @@ class AcctValueModel extends AbstractTableModel {
                 case 2:
                     return m_currency;
                 case 3:
-                    return m_accountName ;
+                    return m_accountName;
 
                 default:
                     return null;
