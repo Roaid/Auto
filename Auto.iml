@@ -12,6 +12,9 @@
     <orderEntry type="library" name="Hibernate" level="project" />
     <orderEntry type="library" name="Mysql" level="project" />
     <orderEntry type="library" name="spring-aop-4.3.2.RELEASE-javadoc" level="project" />
-    <orderEntry type="library" name="log4j-1.2-api-2.8-javadoc" level="project" />
+    <orderEntry type="library" name="commons-logging-1.2" level="project" />
+    <orderEntry type="library" name="slf4j-api-1.7.22" level="project" />
+    <orderEntry type="library" name="commons-dbcp2-2.1.1" level="project" />
+    <orderEntry type="library" name="commons-pool2-2.4.2" level="project" />
   </component>
 </module>

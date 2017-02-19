@@ -3,6 +3,7 @@ package auto.dao;
 
 import auto.model.Stock;
 import auto.model.Strategy;
+import auto.model.StrategyImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +24,9 @@ public interface AutoDAO {
 
     void saveStocks(HashMap<Integer, Stock> m_mapStock);
 
-    void saveStrategies(HashMap<Integer, Strategy> m_mapStrategy);
+    void saveStrategies(HashMap<Integer, StrategyImpl> m_mapStrategy);
 
     ArrayList<Strategy> loadStrategies();
+
+    void saveAnything(HashMap<Integer, ?> m_mapAnything);
 }

@@ -4,7 +4,10 @@ import auto.dao.AutoDAO;
 import auto.dao.AutoDAOImpl;
 import auto.model.Stock;
 import auto.model.Strategy;
+import auto.model.StrategyImpl;
 import com.ib.client.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,9 +17,49 @@ import java.util.Set;
 /**
  * Created by Fang on 25/1/2017.
  */
+@Component
 public class AutoServiceImpl implements AutoService {
+    @Autowired
     AutoDAO autoDAO;
+
+    @Override
+    public void saveStocks(HashMap<Integer, Stock> m_mapStock) {
+        autoDAO.saveStocks(m_mapStock);
+    }
+
+    @Override
+    public void saveStrategies(HashMap<Integer, StrategyImpl> m_mapStrategy) {
+        autoDAO.saveStrategies(m_mapStrategy);
+    }
+
+    @Override
+    public ArrayList<Strategy> loadStrategies() {
+        return autoDAO.loadStrategies();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private EJavaSignal m_signal = new EJavaSignal();
+
+    public EClientSocket getM_client() {
+        return m_client;
+    }
+    public void setM_client(EClientSocket m_client) {
+        this.m_client = m_client;
+    }
+
     private EClientSocket m_client = new EClientSocket(this, m_signal);
 
 
@@ -33,23 +76,7 @@ public class AutoServiceImpl implements AutoService {
     }
 
 
-    @Override
-    public void saveStocks(HashMap<Integer, Stock> m_mapStock) {
-        autoDAO = new AutoDAOImpl();
-        autoDAO.saveStocks(m_mapStock);
-    }
 
-    @Override
-    public void saveStrategies(HashMap<Integer, Strategy> m_mapStrategy) {
-        autoDAO = new AutoDAOImpl();
-        autoDAO.saveStrategies(m_mapStrategy);
-    }
-
-    @Override
-    public ArrayList<Strategy> loadStrategies() {
-        autoDAO = new AutoDAOImpl();
-        return autoDAO.loadStrategies();
-    }
 
 
     @Override

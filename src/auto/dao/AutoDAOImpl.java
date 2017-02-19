@@ -1,25 +1,31 @@
 package auto.dao;
 
 import auto.dao.util.HibernateUtil;
-import auto.model.Proportion;
 import auto.model.Stock;
 import auto.model.Strategy;
+import auto.model.StrategyImpl;
 import com.ib.client.Contract;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
  * Created by Fang on 2017/1/25.
  */
+@Repository
 public class AutoDAOImpl implements AutoDAO {
 
+    @Resource(name="SessionFactory")
+    private SessionFactory sessionFactory;
 
     @Override
     public List<Stock> getAllStocksData(String wherePart, String orderByPart, String rowNumPart) {
@@ -55,7 +61,7 @@ public class AutoDAOImpl implements AutoDAO {
 
 
     @Override
-    public void saveStrategies(HashMap<Integer, Strategy> m_mapStrategy) {
+    public void saveStrategies(HashMap<Integer, StrategyImpl> m_mapStrategy) {
         saveAnything(m_mapStrategy);
     }
 
@@ -79,13 +85,13 @@ public class AutoDAOImpl implements AutoDAO {
         }
         return tmp;
     }
-
-    private void saveAnything(HashMap<Integer, ?> m_mapAnything) {
+    @Override
+    public void saveAnything(HashMap<Integer, ?> m_mapAnything) {
         Session session = null;
         Transaction tx = null;
         Iterator<? extends Map.Entry<Integer, ?>> iterator = m_mapAnything.entrySet().iterator();
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
+            session = sessionFactory.getCurrentSession();
             tx = session.beginTransaction();
             while (iterator.hasNext()) {
                 HashMap.Entry<Integer, ?> entry = iterator.next();

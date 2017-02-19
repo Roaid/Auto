@@ -12,7 +12,7 @@ import java.util.Timer;
 
 @Entity
 @Table(name = "Proportion")
-public class Proportion implements Strategy {
+public class Proportion extends StrategyImpl {
     @Id
     private String code;
     @ManyToOne()

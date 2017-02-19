@@ -2,62 +2,66 @@
 
 package auto.panel;
 
-import auto.model.Proportion;
-import auto.model.Stock;
-import auto.model.Strategy;
+import auto.model.*;
+import com.ib.client.*;
 import auto.service.AutoService;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-//import java.awt.event.WindowAdapter;
-//import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.*;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 
-import auto.service.AutoServiceImpl;
-import com.ib.client.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 class AutoFrame extends JFrame implements EWrapper {
-
-    AutoService autoService;
+    @Autowired
+    private AutoService autoService;
 
     private int current_id; //Current id.ID represents a unique sign for each connection.
+    @Autowired
+    private ConnectDlg dlg;
     private int strategy_id;
     public boolean m_bIsFAAccount = false; //The status of FA(Financial advisor) account.
     public String m_FAAcctCodes;
     private boolean m_disconnectInProgress = false;  //The status of disconnect progress
 
-
-    private EJavaSignal m_signal = new EJavaSignal();
-    private EClientSocket m_client = new EClientSocket(this, m_signal);
-    private EReader m_reader;  //EReader class is the class in charge of reading and parsing the raw messages from the TWS
-
-    //private DataDlg m_dataDlg = new DataDlg(this);  //Create a new data dialog
+    @Autowired
+    private EJavaSignal m_signal;
+    @Autowired
+    private EClientSocket m_client;
+    /*@Autowired
+    private EReader m_reader;*/  //EReader class is the class in charge of reading and parsing the raw messages from the TWS
+    private EReader m_reader;
     private OrderDlg m_orderDlg = new OrderDlg(this);  //Create a new order dialog
     private Vector<TagValue> m_mktDataOptions = new Vector<TagValue>();
-    private HashMap<Integer, Stock> m_mapStock = new HashMap<Integer, Stock>();
-    private HashMap<Integer, Strategy> m_mapStrategy = new HashMap<Integer, Strategy>();
-
+    @Autowired
+    private HashMap<Integer, Stock> m_mapStock;
+    //private HashMap<Integer, Stock> m_mapStock = new HashMap<Integer, Stock>();
+    @Autowired
+    private HashMap<Integer, StrategyImpl> m_mapStrategy;
+    //private HashMap<Integer, Strategy> m_mapStrategy = new HashMap<Integer, Strategy>();
+    @Autowired
+    private MainPanel mainPanel;
+    private JMenuItem itemConnect1, itemConnect2;
+    private FileOutputStream fs; //save dispensable information
+    private PrintStream p;
+    private int test_flag = 0;
 
     private static final int NOT_AN_FA_ACCOUNT_ERROR = 321;
     private int faErrorCodes[] = {503, 504, 505, 522, 1100, NOT_AN_FA_ACCOUNT_ERROR};
     private boolean faError;
     private HashMap<Integer, MktDepthDlg> m_mapRequestToMktDepthDlg = new HashMap<Integer, MktDepthDlg>();
-    private DefaultTableModel model, model2;
-    private JTable table, table2;
+
+
     private AccountDlg m_acctDlg = new AccountDlg(this);
-    private MainPanel mainPanel;  //
-    private JMenuItem itemConnect1, itemConnect2;
-    private FileOutputStream fs; //save dispensable information
-    PrintStream p;
-    int test_flag = 0;
+
 
     AutoFrame() throws FileNotFoundException {
-        autoService = new AutoServiceImpl();
+
         //MenuBar
         JMenuBar menuBar = new JMenuBar();
         //First menu****************************************************************
@@ -156,25 +160,17 @@ class AutoFrame extends JFrame implements EWrapper {
         //Third menu****************************************************************
         setJMenuBar(menuBar);
 
-        mainPanel = new MainPanel(this);
-        model = mainPanel.getModel_DefaultTableModel();
-        model2 = mainPanel.getModel_DefaultTableModel2();
-        table = mainPanel.getStock_JTable();
-        table2 = mainPanel.getStrategy_JTable();
-        setContentPane(mainPanel.main_Panel);
 
         setSize(800, 700);
         setTitle("Auto Trader");
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
         //initialize
         strategy_id = 1;
         fs = new FileOutputStream(new File("src\\log.txt"));
         p = new PrintStream(fs);
     }
-
 
     //Send processor
     private void onConnect() {
@@ -184,15 +180,13 @@ class AutoFrame extends JFrame implements EWrapper {
         }
         m_bIsFAAccount = false;
         // get connection parameters
-        ConnectDlg dlg = new ConnectDlg(this);
+        //ConnectDlg dlg = new ConnectDlg(this);
         dlg.setVisible(true);
         if (!dlg.m_rc) {
             return;
         }
-
         // connect to TWS
         m_disconnectInProgress = false;
-
         m_client.eConnect(dlg.m_retIpAddress, dlg.m_retPort, dlg.m_retClientId);
         if (m_client.isConnected()) {
             message("Connected to Tws server version " + m_client.serverVersion() + " at " + m_client
@@ -201,33 +195,22 @@ class AutoFrame extends JFrame implements EWrapper {
             itemConnect2.setEnabled(true);
         } else {
             error("Error: Connect unsuccessful!\n");
+            return;
         }
-
         m_reader = new EReader(m_client, m_signal);
-
         m_reader.start();
-
         new Thread() {
             public void run() {
-                processMessages();
-
-                int i = 0;
-                System.out.println(i);
+                while (m_client.isConnected()) {
+                    m_signal.waitForSignal();
+                    try {
+                        m_reader.processMsgs();
+                    } catch (Exception e) {
+                        System.out.println("Exception: "+e.getMessage());
+                    }
+                }
             }
         }.start();
-    }
-
-    private void processMessages() {
-
-        while (m_client.isConnected()) {
-            m_signal.waitForSignal();
-            try {
-                m_reader.processMsgs();
-            } catch (Exception e) {
-                //error("Testing!");
-                error(e);
-            }
-        }
     }
 
     private void onDisconnect() {
@@ -258,9 +241,9 @@ class AutoFrame extends JFrame implements EWrapper {
 
         m_mktDataOptions = m_dataDlg.getOptions(); //Option section
 
-        //Iterator it = m_mapStock.entrySet().iterator();
+
         boolean hadone = false;
-        for (Stock value : m_mapStock.values()) {
+        for (Stock value : m_mapStock.values()) {  //Check duplicate id
             if (value.compareTo(m_dataDlg.m_contract.symbol()) == 0) {
                 hadone = true;
             }
@@ -268,7 +251,6 @@ class AutoFrame extends JFrame implements EWrapper {
 
         if (!hadone) {
             m_client.reqContractDetails(m_dataDlg.m_id, m_dataDlg.m_contract);
-            current_id++;
         } else {
             error("Already have this ID.Try a new one.\n");
         }
@@ -295,14 +277,14 @@ class AutoFrame extends JFrame implements EWrapper {
         if (m_mapStock.size() < 1) {
             error("No stocks can be saved.");
         } else {
-            autoService = new AutoServiceImpl();
+            //autoService = new AutoServiceImpl();
             autoService.saveStocks(m_mapStock);
         }
     }
 
     private void addAStrategy() {
         Proportion prop1 = new Proportion(); //Create a new proportion strategy
-        int rows = table.getSelectedRowCount(); //Get the number of the selected rows in main table
+        int rows = mainPanel.getStock_JTable().getSelectedRowCount(); //Get the number of the selected rows in main table
         if (rows < 2) {
             error("Unselected enough stocks\n"); //Print out error message.
             return;
@@ -310,9 +292,9 @@ class AutoFrame extends JFrame implements EWrapper {
             error("Selected too many stocks\n"); //Print out error message.
             return;
         } else {
-            int[] row_index = table.getSelectedRows();
-            int id0 = Integer.parseInt(table.getValueAt(row_index[0], 0).toString());
-            int id1 = Integer.parseInt(table.getValueAt(row_index[1], 0).toString());
+            int[] row_index = mainPanel.getStock_JTable().getSelectedRows();
+            int id0 = Integer.parseInt(mainPanel.getStock_JTable().getValueAt(row_index[0], 0).toString());
+            int id1 = Integer.parseInt(mainPanel.getStock_JTable().getValueAt(row_index[1], 0).toString());
             int conid0 = m_mapStock.get(id0).getContract().conid();
             int conid1 = m_mapStock.get(id1).getContract().conid();
             if (conid0 > conid1) {
@@ -333,7 +315,7 @@ class AutoFrame extends JFrame implements EWrapper {
         prop1.setVolume2(574);
         m_mapStrategy.put(strategy_id, prop1);
         String type = m_mapStrategy.get(strategy_id).getClass().toString().replaceFirst("class auto.model.", "");
-        model2.addRow(new Object[]{strategy_id, m_mapStrategy.get(strategy_id).getCode(), type,
+        mainPanel.getModel_DefaultTableModel2().addRow(new Object[]{strategy_id, m_mapStrategy.get(strategy_id).getCode(), type,
                 getStatusText(m_mapStrategy.get(strategy_id).getStatus())});
         strategy_id++;
         mainPanel.getMaintab_JTabbedPanel().setSelectedIndex(1);
@@ -343,18 +325,18 @@ class AutoFrame extends JFrame implements EWrapper {
 
         if (m_client.isConnected()) {   //Check connection firstly.
 
-            int rows = table2.getSelectedRowCount(); //Get the number of the selected rows in main table
+            int rows = mainPanel.getStrategy_JTable().getSelectedRowCount(); //Get the number of the selected rows in main table
             if (rows < 1) {
                 error("At least select one strategy\n"); //Print out error message.
                 return;
             } else {
-                Strategy strategy;
-                int[] row_index = table2.getSelectedRows();
+                StrategyImpl strategy;
+                int[] row_index = mainPanel.getStrategy_JTable().getSelectedRows();
                 for (int i = 0; i < row_index.length; i++) {
-                    strategy = m_mapStrategy.get(table2.getValueAt(row_index[i], 0));
+                    strategy = m_mapStrategy.get(mainPanel.getStrategy_JTable().getValueAt(row_index[i], 0));
                     strategy.setStatus(1);    //Status 1: waiting
-                    table2.setValueAt(getStatusText(strategy.getStatus()), row_index[i], 3);
-                    String type = table2.getValueAt(row_index[i], 2).toString().toLowerCase(); //Get strategy type
+                    mainPanel.getStrategy_JTable().setValueAt(getStatusText(strategy.getStatus()), row_index[i], 3);
+                    String type = mainPanel.getStrategy_JTable().getValueAt(row_index[i], 2).toString().toLowerCase(); //Get strategy type
                     switch (type) {
                         case "proportion":
                             Proportion prop1 = (Proportion) strategy;
@@ -366,19 +348,19 @@ class AutoFrame extends JFrame implements EWrapper {
                                         public void run() {
                                             if (prop1.getStock1().getBpirce() <= 0 || prop1.getStock1().getApirce() <= 0 || prop1.getStock2()
                                                     .getBpirce() <= 0 || prop1.getStock2().getApirce() <= 0) {
-                                                message("Strategy " + table2.getValueAt(row_index[finalI], 0)
+                                                message("Strategy " + mainPanel.getStrategy_JTable().getValueAt(row_index[finalI], 0)
                                                         .toString() + " : Do  not have a valid price.\n");
                                             } else if (prop1.getStatus() == 2) { //proportion submitted an
                                                 // order and was waiting for an confirmation.
-                                                message("Strategy " + table2.getValueAt(row_index[finalI], 0)
+                                                message("Strategy " + mainPanel.getStrategy_JTable().getValueAt(row_index[finalI], 0)
                                                         .toString() + " : Waiting an confirmation for submitted " +
                                                         "order.\n");
                                             } else if (prop1.getStatus() == 3) {  //proportion submitted an
                                                 // order and has been confirmed.
-                                                message("Strategy " + table2.getValueAt(row_index[finalI], 0)
+                                                message("Strategy " + mainPanel.getStrategy_JTable().getValueAt(row_index[finalI], 0)
                                                         .toString() + " : Has had an open order.\n");
                                             } else if (prop1.compare()) {
-                                                message("Strategy " + table2.getValueAt(row_index[finalI], 0)
+                                                message("Strategy " + mainPanel.getStrategy_JTable().getValueAt(row_index[finalI], 0)
                                                         .toString() + " : Try send an order.\n");
                                                 m_client.placeOrder(current_id, prop1.getC_contract(), prop1.getOrder());
                                                 prop1.setOrder_id(current_id);
@@ -386,7 +368,7 @@ class AutoFrame extends JFrame implements EWrapper {
                                                 prop1.setStatus(2);    //Status 2: PreSubmitted or Submitted -
                                                 // proportion submitted an order and was waiting for an confirmation.
                                             } else {
-                                                /*message("Strategy " + table2.getValueAt(row_index[finalI], 0)
+                                                /*message("Strategy " + mainPanel.getStrategy_JTable().getValueAt(row_index[finalI], 0)
                                                         .toString() + " : Nothing to do.\n");*/
                                             }
 
@@ -412,12 +394,10 @@ class AutoFrame extends JFrame implements EWrapper {
 
 
     private void saveStrategies() {
-        autoService = new AutoServiceImpl();
         autoService.saveStrategies(m_mapStrategy);
     }
 
     private void loadStrategies() {
-        autoService = new AutoServiceImpl();
         ArrayList<Strategy> tmp = autoService.loadStrategies();
 
         // m_mapStrategy
@@ -573,16 +553,16 @@ class AutoFrame extends JFrame implements EWrapper {
                     break;
             }
             m_mapStock.put(tickerId, value);
-            int rows = table.getRowCount();
+            int rows = mainPanel.getStock_JTable().getRowCount();
             for (int i = 0; i < rows; i++) {
-                int id = Integer.parseInt(table.getValueAt(i, 0).toString());
+                int id = Integer.parseInt(mainPanel.getStock_JTable().getValueAt(i, 0).toString());
                 if (id == tickerId) {
                     switch (field) {
                         case 1:
-                            table.setValueAt(value.getBpirce(), i, 2);
+                            mainPanel.getStock_JTable().setValueAt(value.getBpirce(), i, 2);
                             break;
                         case 2:
-                            table.setValueAt(value.getApirce(), i, 3);
+                            mainPanel.getStock_JTable().setValueAt(value.getApirce(), i, 3);
                             break;
                     }
                 }
@@ -628,9 +608,9 @@ class AutoFrame extends JFrame implements EWrapper {
         } else {
             int position = -1;  //store row number.
             int index = -1;  //store hashmap key from certain row.
-            int rows = table2.getRowCount();
+            int rows = mainPanel.getStrategy_JTable().getRowCount();
             for (int i = 0; i < rows; i++) {
-                int index_tmp = Integer.parseInt(table2.getValueAt(i, 0).toString());
+                int index_tmp = Integer.parseInt(mainPanel.getStrategy_JTable().getValueAt(i, 0).toString());
                 if (m_mapStrategy.get(index_tmp).getOrder_id() == orderId) {
                     position = i;
                     index = index_tmp;
@@ -641,17 +621,17 @@ class AutoFrame extends JFrame implements EWrapper {
                     case "PreSubmitted":
                     case "Submitted":
                         m_mapStrategy.get(index).setStatus(3); //PreSubmitted or Submitted
-                        table2.setValueAt(getStatusText(3), position, 3);
+                        mainPanel.getStrategy_JTable().setValueAt(getStatusText(3), position, 3);
                         break;
                     case "Filled":
                         if (remaining == 0) {
                             m_mapStrategy.get(index).setStatus(1); //1 waiting
                             m_mapStrategy.get(index).fillorder();  //modify the strategy based on filled information.
-                            table2.setValueAt(getStatusText(1), position, 3);
+                            mainPanel.getStrategy_JTable().setValueAt(getStatusText(1), position, 3);
                             test_flag = 1;  //test code
                         } else {
                             m_mapStrategy.get(index).setStatus(5); //5 Filled
-                            table2.setValueAt(getStatusText(5), position, 3);
+                            mainPanel.getStrategy_JTable().setValueAt(getStatusText(5), position, 3);
                         }
                         break;
                 }
@@ -702,7 +682,8 @@ class AutoFrame extends JFrame implements EWrapper {
         Stock tmp = new Stock(contractDetails.contract().symbol());
         tmp.setContract(contractDetails.contract());
         m_mapStock.put(reqId, tmp);
-        model.addRow(new Object[]{reqId, m_mapStock.get(reqId).getCode(), m_mapStock.get(reqId).getBpirce(), m_mapStock.get(reqId).getApirce()});
+        current_id++;
+        mainPanel.getModel_DefaultTableModel1().addRow(new Object[]{reqId, m_mapStock.get(reqId).getCode(), m_mapStock.get(reqId).getBpirce(), m_mapStock.get(reqId).getApirce()});
         m_client.reqMktData(reqId, contractDetails.contract(), "", false, m_mktDataOptions);
 
     }

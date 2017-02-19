@@ -1,5 +1,8 @@
 package auto.panel;
 
+import org.springframework.stereotype.*;
+import org.springframework.stereotype.Component;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -35,7 +38,7 @@ public class MainPanel {
     private JTextArea info_JTextArea;
 
 
-    private DefaultTableModel model_DefaultTableModel;
+    private DefaultTableModel model_DefaultTableModel1;
     private DefaultTableModel model_DefaultTableModel2;
     private AutoFrame autoframe;
 
@@ -47,8 +50,8 @@ public class MainPanel {
         return strategy_JTable;
     }
 
-    public DefaultTableModel getModel_DefaultTableModel() {
-        return model_DefaultTableModel;
+    public DefaultTableModel getModel_DefaultTableModel1() {
+        return model_DefaultTableModel1;
     }
 
     public DefaultTableModel getModel_DefaultTableModel2() {
@@ -62,8 +65,8 @@ public class MainPanel {
 
         String[] columnNames = {"ID", "Stock", "bid price", "ask price"};
 
-        model_DefaultTableModel = new DefaultTableModel(data, columnNames);
-        stock_JTable.setModel(model_DefaultTableModel);
+        model_DefaultTableModel1 = new DefaultTableModel(data, columnNames);
+        stock_JTable.setModel(model_DefaultTableModel1);
         float[] columnWidthPercentage = {0.1f, 0.4f, 0.3f, 0.3f};
         Dimension a = stock_JTable.getPreferredSize();
         double tW = a.getWidth();
@@ -84,6 +87,7 @@ public class MainPanel {
             strategy_JTable.getColumnModel().getColumn(i).setPreferredWidth((int) pWidth);
         }
 
+        autoframe.setContentPane(main_Panel);
     }
 
 }

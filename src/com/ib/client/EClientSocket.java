@@ -1,12 +1,13 @@
 package com.ib.client;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.io.DataInputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.net.Socket;
-
 public class EClientSocket extends EClient implements EClientMsgSink {
-
     protected int m_redirectCount = 0;
     protected int m_defaultPort;
     private boolean m_allowRedirect;
@@ -22,7 +23,6 @@ public class EClientSocket extends EClient implements EClientMsgSink {
     public boolean isAsyncEConnect() {
         return m_asyncEConnect;
     }
-
     public EClientSocket(EWrapper eWrapper, EReaderSignal signal) {
         super(eWrapper, signal);
     }
@@ -57,6 +57,7 @@ public class EClientSocket extends EClient implements EClientMsgSink {
         sendConnectRequest();
 
         // start reader thread
+
         EReader reader = new EReader(this, m_signal);
         ;
 
@@ -87,7 +88,6 @@ public class EClientSocket extends EClient implements EClientMsgSink {
         m_clientId = clientId;
         m_extraAuth = extraAuth;
         m_redirectCount = 0;
-
         if (m_host == null) {
             return;
         }
@@ -98,6 +98,7 @@ public class EClientSocket extends EClient implements EClientMsgSink {
             eDisconnect();
             connectionError();
         }
+
     }
 
     public boolean allowRedirect() {

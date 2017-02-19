@@ -2,7 +2,6 @@ package auto.controller;
 
 import auto.service.AutoService;
 import com.ib.client.*;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -17,7 +16,7 @@ public class AutoController implements EWrapper {
     @Autowired
     AutoService autoService;
 
-    private static final Logger logger = Logger.getLogger(AutoController.class);
+
 
 
     @Override

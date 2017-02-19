@@ -9,7 +9,6 @@ import javax.swing.*;
 
 public class ConnectDlg extends JDialog {
     public static int LAST_CLIENT_ID = 0;
-
     private AutoFrame m_parent;
     boolean m_rc; //flag,if success = ture,unsuccess = false
     String m_retIpAddress; //ip address
