@@ -1,4 +1,17 @@
-finish: 4
+finish: 34
 
-finish: 5
+finish: 35
 
+This is an status report of order: 
+order status: orderId=36 clientId=0 permId=1507621015 status=PreSubmitted filled=0.0 remaining=1.0 avgFillPrice=0.0 lastFillPrice=0.0 parent Id=0 whyHeld=locateThis is an status report of order: 
+order status: orderId=36 clientId=0 permId=1507621015 status=Filled filled=1.0 remaining=0.0 avgFillPrice=-43.59 lastFillPrice=-43.59 parent Id=0 whyHeld=nullThis is an status report of order: 
+order status: orderId=36 clientId=0 permId=1507621015 status=Filled filled=1.0 remaining=0.0 avgFillPrice=-43.59 lastFillPrice=-43.59 parent Id=0 whyHeld=nullThis is an status report of order: 
+order status: orderId=36 clientId=0 permId=1507621015 status=Filled filled=1.0 remaining=0.0 avgFillPrice=-43.59 lastFillPrice=-43.59 parent Id=0 whyHeld=nullThis is an status report of order: 
+order status: orderId=36 clientId=0 permId=1507621015 status=Filled filled=1.0 remaining=0.0 avgFillPrice=-43.59 lastFillPrice=-43.59 parent Id=0 whyHeld=nullThis is an status report of order: 
+order status: orderId=36 clientId=0 permId=1507621015 status=Filled filled=1.0 remaining=0.0 avgFillPrice=-43.59 lastFillPrice=-43.59 parent Id=0 whyHeld=nullThis is an status report of order: 
+order status: orderId=36 clientId=0 permId=1507621015 status=Filled filled=1.0 remaining=0.0 avgFillPrice=-43.59 lastFillPrice=-43.59 parent Id=0 whyHeld=nullThis is an status report of order: 
+order status: orderId=36 clientId=0 permId=1507621015 status=Filled filled=1.0 remaining=0.0 avgFillPrice=-43.59 lastFillPrice=-43.59 parent Id=0 whyHeld=nullThis is an status report of order: 
+order status: orderId=36 clientId=0 permId=1507621015 status=Filled filled=1.0 remaining=0.0 avgFillPrice=-43.59 lastFillPrice=-43.59 parent Id=0 whyHeld=nullThis is an status report of order: 
+order status: orderId=36 clientId=0 permId=1507621015 status=Filled filled=1.0 remaining=0.0 avgFillPrice=-43.59 lastFillPrice=-43.59 parent Id=0 whyHeld=nullThis is an status report of order: 
+order status: orderId=36 clientId=0 permId=1507621015 status=Filled filled=1.0 remaining=0.0 avgFillPrice=-43.59 lastFillPrice=-43.59 parent Id=0 whyHeld=nullThis is an status report of order: 
+order status: orderId=36 clientId=0 permId=1507621015 status=Filled filled=1.0 remaining=0.0 avgFillPrice=-43.59 lastFillPrice=-43.59 parent Id=0 whyHeld=null

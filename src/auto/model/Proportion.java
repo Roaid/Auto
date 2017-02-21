@@ -165,12 +165,8 @@ public class Proportion extends StrategyImpl {
                 stock2.getApirce()) / 2;
         double sum1 = volume1 * stock1.getBpirce() - volume2 * stock2.getApirce();
         if (sum1 > 0 && (sum1 / sum) > threshold) {
-            System.out.println("way 1 \n");
-            //Create a contract
-            c_contract.symbol(code);
-            c_contract.secType("BAG");
-            c_contract.currency("USD");
-            c_contract.exchange("SMART");
+            System.out.println("way 1");
+
 
             //Calculate size of each leg.
             int volume_leg1 = (int) ((sum1 / 2) / stock1.getBpirce());
@@ -187,50 +183,14 @@ public class Proportion extends StrategyImpl {
             last_remain = remain;
             remain = (volume_leg1 * stock1.getBpirce() + remain) - (volume_leg2 * stock2.getApirce());
 
-            //Create legs.
-            ComboLeg leg1 = new ComboLeg();
-            ComboLeg leg2 = new ComboLeg();
-            ArrayList<ComboLeg> addAllLegs = new ArrayList<ComboLeg>();
-            leg1.conid(stock1.getContract().conid());
-            leg1.ratio(volume_leg1 / multiple);
-            leg1.action("SELL");
-            leg1.exchange("SMART");
-            addAllLegs.add(leg1);
-            leg2.conid(stock2.getContract().conid());
-            leg2.ratio(volume_leg2 / multiple);
-            leg2.action("BUY");
-            leg2.exchange("SMART");
-            addAllLegs.add(leg2);
-            c_contract.comboLegs(addAllLegs);
-            //Create an order
-            order.account("DU598622");
-            order.orderType("LMT");
-            order.totalQuantity(multiple);
-            //order.tif("GTC");
-            //order.goodTillDate("20170116 21:43:04 EST");
-            order.orderComboLegs(new ArrayList<OrderComboLeg>());
-
-            OrderComboLeg comboLeg1 = new OrderComboLeg();
-            comboLeg1.price(stock1.getBpirce());
-            order.orderComboLegs().add(comboLeg1);
-
-            OrderComboLeg comboLeg2 = new OrderComboLeg();
-            comboLeg2.price(stock2.getApirce());
-            order.orderComboLegs().add(comboLeg2);
-
-            List<TagValue> smartComboRoutingParams = new ArrayList<TagValue>();
-            smartComboRoutingParams.add(new TagValue("NonGuaranteed", "1"));
-            order.smartComboRoutingParams((ArrayList<TagValue>) smartComboRoutingParams);
+            createOrder(stock1,stock2,volume_leg1,volume_leg2,multiple);
             return true;
         }
         double sum2 = volume2 * stock2.getBpirce() - volume1 * stock1.getApirce();
         if (sum2 > 0 && (sum2 / sum) > threshold) {
             System.out.println("way 2");
             //Create a contract
-            c_contract.symbol(code);
-            c_contract.secType("BAG");
-            c_contract.currency("USD");
-            c_contract.exchange("SMART");
+
 
             //Calculate size of each leg.
             int volume_leg1 = (int) ((sum2 / 2) / stock2.getBpirce());
@@ -248,45 +208,56 @@ public class Proportion extends StrategyImpl {
             last_remain = remain;
             remain = (volume_leg1 * stock2.getBpirce() + remain) - (volume_leg2 * stock1.getApirce());
 
-            //Create legs.
-            ComboLeg leg1 = new ComboLeg();
-            ComboLeg leg2 = new ComboLeg();
-            ArrayList<ComboLeg> addAllLegs = new ArrayList<ComboLeg>();
-            leg1.conid(stock1.getContract().conid());
-            leg1.ratio(volume_leg2 / multiple);
-            leg1.action("BUY");
-            leg1.exchange("SMART");
-            leg2.conid(stock2.getContract().conid());
-            leg2.ratio(volume_leg1 / multiple);
-            leg2.action("SELL");
-            leg2.exchange("SMART");
-            addAllLegs.add(leg1);
-            addAllLegs.add(leg2);
-            c_contract.comboLegs(addAllLegs);
-            //Create an order
-            order.account("DU598622");
-            order.orderType("LMT");
-            order.totalQuantity(multiple);
-            //order.tif("GTC");
-            //order.goodTillDate("20170116 21:43:04 EST");
-            order.orderComboLegs(new ArrayList<OrderComboLeg>());
-
-            OrderComboLeg comboLeg1 = new OrderComboLeg();
-            //comboLeg.price(stock1.getBpirce());
-            comboLeg1.price(stock1.getApirce());
-            order.orderComboLegs().add(comboLeg1);
-            OrderComboLeg comboLeg2 = new OrderComboLeg();
-            comboLeg2.price(stock2.getBpirce());
-            order.orderComboLegs().add(comboLeg2);
-
-            List<TagValue> smartComboRoutingParams = new ArrayList<TagValue>();
-            smartComboRoutingParams.add(new TagValue("NonGuaranteed", "1"));
-            order.smartComboRoutingParams((ArrayList<TagValue>) smartComboRoutingParams);
+            createOrder(stock2,stock1,volume_leg1,volume_leg2,multiple);
             return true;
         }
         return false;
     }
 
+    public void createOrder(Stock stock_high,Stock stock_low,int volume_high,int volume_low,int multiple){
+
+
+
+        ComboLeg leg1 = new ComboLeg();
+        ComboLeg leg2 = new ComboLeg();
+        ArrayList<ComboLeg> addAllLegs = new ArrayList<ComboLeg>();
+        leg1.conid(stock_high.getContract().conid());
+        leg1.ratio(volume_high / multiple);
+        leg1.action("SELL");
+        leg1.exchange("SMART");
+        addAllLegs.add(leg1);
+        leg2.conid(stock_low.getContract().conid());
+        leg2.ratio(volume_low / multiple);
+        leg2.action("BUY");
+        leg2.exchange("SMART");
+        addAllLegs.add(leg2);
+
+        c_contract.symbol(stock_high.getCode());
+        c_contract.secType("BAG");
+        c_contract.currency("USD");
+        c_contract.exchange("SMART");
+        c_contract.comboLegs(addAllLegs);
+        //Create an order
+        order.account("DU598622");
+        order.orderType("LMT");
+        order.totalQuantity(multiple);
+        //order.tif("GTC");
+        //order.goodTillDate("20170116 21:43:04 EST");
+        order.orderComboLegs(new ArrayList<OrderComboLeg>());
+
+        OrderComboLeg comboLeg1 = new OrderComboLeg();
+        comboLeg1.price(stock_high.getBpirce());
+        order.orderComboLegs().add(comboLeg1);
+
+        OrderComboLeg comboLeg2 = new OrderComboLeg();
+        comboLeg2.price(stock_low.getApirce());
+        order.orderComboLegs().add(comboLeg2);
+
+        List<TagValue> smartComboRoutingParams = new ArrayList<TagValue>();
+        smartComboRoutingParams.add(new TagValue("NonGuaranteed", "1"));
+        order.smartComboRoutingParams((ArrayList<TagValue>) smartComboRoutingParams);
+
+    }
     @Override
     public void fillorder() {
         volume1 = volume1 + volume1_change;

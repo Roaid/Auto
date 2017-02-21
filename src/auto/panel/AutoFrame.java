@@ -363,6 +363,7 @@ class AutoFrame extends JFrame implements EWrapper {
                                                 message("Strategy " + mainPanel.getStrategy_JTable().getValueAt(row_index[finalI], 0)
                                                         .toString() + " : Try send an order.\n");
                                                 m_client.placeOrder(current_id, prop1.getC_contract(), prop1.getOrder());
+
                                                 prop1.setOrder_id(current_id);
                                                 current_id++;
                                                 prop1.setStatus(2);    //Status 2: PreSubmitted or Submitted -
@@ -679,13 +680,12 @@ class AutoFrame extends JFrame implements EWrapper {
 
     @Override
     public void contractDetails(int reqId, ContractDetails contractDetails) {
-        Stock tmp = new Stock(contractDetails.contract().symbol());
-        tmp.setContract(contractDetails.contract());
-        m_mapStock.put(reqId, tmp);
-        current_id++;
-        mainPanel.getModel_DefaultTableModel1().addRow(new Object[]{reqId, m_mapStock.get(reqId).getCode(), m_mapStock.get(reqId).getBpirce(), m_mapStock.get(reqId).getApirce()});
-        m_client.reqMktData(reqId, contractDetails.contract(), "", false, m_mktDataOptions);
-
+            Stock tmp = new Stock(contractDetails.contract().symbol());
+            tmp.setContract(contractDetails.contract());
+            m_mapStock.put(reqId, tmp);
+            current_id++;
+            mainPanel.getModel_DefaultTableModel1().addRow(new Object[]{reqId, m_mapStock.get(reqId).getCode(), m_mapStock.get(reqId).getBpirce(), m_mapStock.get(reqId).getApirce()});
+            m_client.reqMktData(reqId, contractDetails.contract(), "", false, m_mktDataOptions);
     }
 
     @Override

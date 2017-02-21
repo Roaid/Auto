@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.3.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+    <context:component-scan base-package="auto.service"/>
+    <context:component-scan base-package="auto.dao"/>
+    <context:annotation-config/>
+    <tx:annotation-driven transaction-manager="txManager"/>
+
+    <!-- Definition for student bean -->
+    <bean id="autoframe" class="auto.panel.AutoFrame">
+    </bean>
+    <bean id="connectdlg" class="auto.panel.ConnectDlg">
+        <constructor-arg index="0" ref="autoframe"/>
+    </bean>
+    <bean id="m_signal" class="com.ib.client.EJavaSignal">
+    </bean>
+
+    <bean id="m_client" class="com.ib.client.EClientSocket">
+        <constructor-arg index="0" ref="autoframe"/>
+        <constructor-arg index="1" ref="m_signal"/>
+    </bean>
+    <bean id="m_mapStock" class="java.util.HashMap">
+        <constructor-arg>
+            <map key-type="java.lang.Integer" value-type="auto.model.Stock">
+            </map>
+        </constructor-arg>
+    </bean>
+    <bean id="m_mapStrategy" class="java.util.HashMap">
+        <constructor-arg>
+            <map key-type="java.lang.Integer" value-type="auto.model.Strategy">
+            </map>
+        </constructor-arg>
+    </bean>
+    <bean id="mainPanel" class="auto.panel.MainPanel">
+        <constructor-arg index="0" ref="autoframe"/>
+    </bean>
+    <bean id="DataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/test"/>
+        <property name="username" value="root"/>
+        <property name="password" value="password"/>
+    </bean>
+
+    <bean id="SessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="DataSource"/>
+        <property name="packagesToScan">
+            <list>
+                <value>auto.model</value>
+                <value>com.ib.client</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.connection.pool_size">1</prop>
+                <prop key="hibernate.current_session_context_class">thread</prop>
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
+        </property>
+    </bean>
+    <bean id="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="SessionFactory"/>
+    </bean>
+</beans>
